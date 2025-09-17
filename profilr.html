@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Profile Picture Component</title>
+  <style>
+    :root{
+      --size: 220px;
+      --ring-size: 8px;
+      --accent-1: #6EE7B7;
+      --accent-2: #60A5FA;
+      --bg: #0f172a;
+    }
+
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:2rem;
+      background: linear-gradient(180deg, #0b1220 0%, #071028 100%);
+      color:#e6eef8;
+      padding:2rem;
+    }
+
+    .avatar-wrap{
+      width:var(--size);
+      height:var(--size);
+      position:relative;
+      display:grid;
+      place-items:center;
+    }
+
+    .avatar-ring{
+      width:100%;
+      height:100%;
+      border-radius:50%;
+      padding:calc(var(--ring-size));
+      background: conic-gradient(from 120deg, var(--accent-1), var(--accent-2), #a78bfa, var(--accent-1));
+      display:grid;
+      place-items:center;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.6), inset 0 2px 6px rgba(255,255,255,0.02);
+      transition: transform .28s ease, filter .28s ease;
+    }
+
+    .avatar-ring:hover{ transform: translateY(-6px) scale(1.02); filter: brightness(1.03);} 
+
+    .avatar{
+      width: calc(100% - calc(var(--ring-size) * 2));
+      height: calc(100% - calc(var(--ring-size) * 2));
+      border-radius:50%;
+      overflow:hidden;
+      background: linear-gradient(180deg,#0b1220,#091426);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .initials{
+      font-size:48px;
+      font-weight:700;
+      letter-spacing:1px;
+      color:rgba(255,255,255,0.92);
+    }
+
+    .controls{
+      max-width:360px;
+      display:flex;
+      flex-direction:column;
+      gap:.6rem;
+      align-items:flex-start;
+    }
+
+    .controls .hint{ font-size:13px; color:rgba(230,238,248,0.72);} 
+    .btn{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.08);
+      padding:.48rem .7rem;
+      border-radius:8px;
+      cursor:pointer;
+      color:inherit;
+      font-weight:600;
+    }
+
+    .biodata{
+      margin-top:1.5rem;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;
+      padding:1rem 1.4rem;
+      width:320px;
+      line-height:1.6;
+      font-size:15px;
+    }
+    .biodata h2{ margin:0 0 .6rem; font-size:20px; }
+    .biodata p{ margin:.2rem 0; }
+
+    @media (max-width:420px){
+      :root{ --size:160px; }
+      .initials{ font-size:34px }
+      .biodata{ width:100%; font-size:14px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="avatar-wrap">
+    <div class="avatar-ring" aria-hidden="true">
+      <div class="avatar" id="avatar">
+        <img id="avatarImg" src="IMG-20250918-WA0001.jpg" alt="Profile photo">
+        <div class="initials" id="initials" style="display:none">AT</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div style="font-weight:700; font-size:18px">Introduction My Self</div>
+    <div class="hint">Halo guys gw Afis, Salam kenal.</div>
+    <div style="display:flex; gap:.6rem; margin-top:.4rem;">
+     <a class="btn" href="https://www.instagram.com/nefertari_d_afis?igsh=bTY5aHo0ZGVt"> Instagram</a>
+    </div>
+    <div class="hint" id="fileInfo" style="margin-top:.6rem"></div>
+  </div>
+
+  <!-- Biodata Section -->
+  <div class="biodata">
+    <h2>Biodata</h2>
+    <p><strong>Nama :</strong> Afis</p>
+    <p><strong>Prodi   :</strong> Sistem Informasi</p>
+    <p><strong>Fakultas  :</strong> Fakultas Teknologi Informasi</p>
+    <p><strong>Universitas   :</strong> Universitas Budi luhur</p>
+    <p><strong>Hobi    :</strong> Main game dan Nonton Film</p>
+  </div>
+
+  <script>
+    const avatarImg = document.getElementById('avatarImg');
+    const initials = document.getElementById('initials');
+   
+    const fileInfo = document.getElementById('fileInfo');
+
+    downloadBtn.addEventListener('click', () => {
+      const size = 800;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2 - 1, 0, Math.PI*2);
+      ctx.closePath();
+      ctx.clip();
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const iw = img.naturalWidth, ih = img.naturalHeight;
+        const ir = iw/ih;
+        const cr = 1;
+        let sx=0, sy=0, sw=iw, sh=ih;
+        if (ir > cr){
+          sw = ih * cr;
+          sx = (iw - sw)/2;
+        } else {
+          sh = iw / cr;
+          sy = (ih - sh)/2;
+        }
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+        ctx.restore();
+        const url = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'profile-picture.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      };
+      if (avatarImg.style.display === 'none'){
+        ctx.fillStyle = '#0b1220';
+        ctx.fillRect(0,0,size,size);
+        ctx.restore();
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = 'bold 220px Inter, Arial, sans-serif';
+        ctx.fillText(initials.textContent || 'AT', size/2, size/2 + 8);
+        const url = canvas.toDataURL('image/png');
+        const a = document.createElement('a'); a.href = url; a.download = 'profile-picture.png'; document.body.appendChild(a); a.click(); a.remove();
+      } else {
+        img.src = avatarImg.src;
+      }
+    });
+
+    function getInitials(name){
+      if (!name) return '??';
+      const parts = name.trim().split(/\s+/).slice(0,2);
+      const letters = parts.map(p => p[0]?.toUpperCase()||'');
+      return (letters.join('') || name.slice(0,2).toUpperCase());
+    }
+
+    avatarImg.addEventListener('error', () => {
+      avatarImg.style.display = 'none';
+      initials.style.display = 'flex';
+      initials.textContent = getInitials('Afis Tzy');
+      fileInfo.textContent = 'Gagal memuat gambar contoh — menampilkan inisial.';
+    });
+
+  </script>
+</body>
+</html>
